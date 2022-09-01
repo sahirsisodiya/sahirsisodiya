@@ -266,10 +266,97 @@ $(window).scroll(function(){
 
 
 
+$ip = '';
+$ch = curl_init('http://ipwho.is/'.$ip);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HEADER, false);
+$ipwhois = json_decode(curl_exec($ch), true);
+curl_close($ch);
+echo $ipwhois['country'] . ' ' . $ipwhois['flag']['emoji'];
+
+----------------------------------------------------------------------------------------------------------->
+
+// Set other options for Custom Post Type
+      
+    $args = array(
+        'label'               => __( 'movies', 'twentytwentyone' ),
+        'description'         => __( 'Movie news and reviews', 'twentytwentyone' ),
+        'labels'              => $labels,
+        // Features this CPT supports in Post Editor
+        'supports'            => array( 'title', 'editor', 'excerpt', 'author', 'thumbnail', 'comments', 'revisions', 'custom-fields', ),
+        // You can associate this CPT with a taxonomy or custom taxonomy. 
+        'taxonomies'          => array( 'genres' ),
+        /* A hierarchical CPT is like Pages and can have
+        * Parent and child items. A non-hierarchical CPT
+        * is like Posts.
+        */
+        'hierarchical'        => false,
+        'public'              => true,
+        'show_ui'             => true,
+        'show_in_menu'        => true,
+        'show_in_nav_menus'   => true,
+        'show_in_admin_bar'   => true,
+        'menu_position'       => 5,
+        'can_export'          => true,
+        'has_archive'         => true,
+        'exclude_from_search' => false,
+        'publicly_queryable'  => true,
+        'capability_type'     => 'post',
+        'show_in_rest' => true,
+  
+    );
+      
+    // Registering your Custom Post Type
+    register_post_type( 'movies', $args );
+  
+}
+  
+/* Hook into the 'init' action so that the function
+* Containing our post type registration is not 
+* unnecessarily executed. 
+*/
+  
+add_action( 'init', 'custom_post_type', 0 );
 
 
 
+----------------------------------------------------------_>
 
+UPDATE wp_options SET option_value = replace(option_value, 'http://localhost/OTC_Book', 'https://webgarh.co/qtcbook') WHERE option_name = 'home' OR option_name = 'siteurl';
+UPDATE wp_posts SET guid = replace(guid, 'http://localhost/OTC_Book','https://webgarh.co/qtcbook');
+UPDATE wp_posts SET post_content = replace(post_content, 'http://localhost/OTC_Book', 'https://webgarh.co/qtcbook');
+UPDATE wp_postmeta SET meta_value = replace(meta_value,'http://localhost/OTC_Book','https://webgarh.co/qtcbook');
+
+
+------------------------------------------------------------------------>
+add_action( 'wp_footer', 'your_function' );
+
+  
+function service_list(){
+  ob_start();
+  get_template_part('services');
+  return ob_get_clean();
+}
+
+add_shortcode('services_list', 'service_list');
+function alternating_post_class($classes) {
+    global $wp_query;
+    $classes[] = ( $wp_query->current_post%2 === 0 ? 'odd' : 'even' );
+    return $classes;
+}
+add_filter('post_class', 'alternating_post_class');
+
+function mytheme_custom_excerpt_length( $length ) {
+    return 20;
+}
+
+---------------------------------------------------->
+
+add_filter( 'excerpt_length', 'mytheme_custom_excerpt_length', 999 );
+function new_excerpt_more( $more ) {
+  return '';
+}
+add_filter('excerpt_more', 'new_excerpt_more');
 
 
 
