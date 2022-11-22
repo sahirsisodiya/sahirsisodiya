@@ -361,3 +361,224 @@ add_filter('excerpt_more', 'new_excerpt_more');
 
 
 
+----------------------------------------------------------------------------------------------->
+add_action( 'manage_posts_extra_tablenav', 'admin_order_list_top_bar_button', 20, 1 );
+function admin_order_list_top_bar_button( $which ) {
+    global $typenow;
+
+
+    if ( 'shop_order' === $typenow && 'top' === $which ) {
+        ?>
+        <div class="alignleft actions custom">
+            <button type="submit" name="custom_" style="height:32px;" class="button" value=""><?php
+                echo __( 'Custom abc', 'woocommerce' ); ?></button>
+        </div>
+        <?php
+    }
+}
+
+function my_custom_columns_list($columns) {
+    
+    unset( $columns['seopress_title']  );
+    unset( $columns['seopress_desc'] );
+  
+
+
+	
+    return $columns;
+}
+add_filter( 'manage_product_posts_columns', 'my_custom_columns_list' );
+
+
+add_filter( 'manage_edit-product_columns', 'misha_brand_column', 20 );
+function misha_brand_column( $columns_array ) {
+
+	// I want to display Brand column just after the product name column
+	return array_slice( $columns_array, 0,10, true )
+	+ array( 'on_off' => 'Show/Hide' )
+	+ array_slice( $columns_array, 10, NULL, true );
+
+
+}
+
+add_action( 'manage_posts_custom_column', 'misha_populate_brands' );
+function misha_populate_brands( $column_name ) {
+ global $post;
+  
+	if( $column_name  == 'on_off' ) {
+      $product_enable=get_post_meta($post->ID,'product_enable_disable',true);
+    if($product_enable==1){
+  $checked='checked';
+    }else{
+        $checked='';
+    }
+		// if you suppose to display multiple brands, use foreach();
+		/*$x = get_the_terms( get_the_ID(), 'pa_brand'); // taxonomy name
+		echo $x[0]->name;*/ 
+  
+    echo '<label class="switch">
+  <input type="checkbox"  '.$checked.' data-pro_id="'.$post->ID.'" class="onetwo '.$product_status.'" value="1" name="check1" >
+  <span class="slider round"></span>
+</label>';
+
+
+	}
+
+
+
+}
+
+--------------------------------------------------------------------------------------------------------------->
+
+<script> 
+jQuery(window).scroll(function(){
+      if (jQuery(this).scrollTop() > 135) {
+          jQuery('header.x-masthead').addClass('fixed');
+      } else {
+          jQuery('header.x-masthead').removeClass('fixed');
+      }
+  });
+
+<?php $url = site_url(); ?>
+
+//var url= window.location.href;  
+//alert(url);
+
+
+//alert(attvalue);
+
+jQuery('.redirect_contact').click(function(){
+var attvalue = jQuery('.redirect_contact').attr('myatt');
+   window.location.href='<?php echo $url.'/contact/?equipment_rental=';?>'+attvalue;
+
+});
+const urlParams = new URLSearchParams(window.location.search);
+const param_x = urlParams.get('equipment_rental');
+   //alert(param_x);
+   jQuery("#equpment_value").append(param_x);
+</script>
+
+
+
+----------------------------------------------------------------------------->
+
+function delete_post_type(){
+  unregister_post_type( 'x-portfolio' );
+}
+add_action('init','delete_post_type', 100);
+
+
+--------------------------------------------------------------------->
+
+<div class="related_post">
+  <div class="container_width">
+<?php
+
+//get the taxonomy terms of custom post type
+
+
+$terms = get_the_terms($single->ID,'equipment_category');
+foreach ($terms as $term ) {
+   $term->name;
+}
+/*echo "<pre>";
+print_r($texoname );*/
+
+ 
+  
+//query arguments
+$args = array(
+    'post_type' => 'equipment_rentals',
+    'post_status' => 'publish',
+    'posts_per_page' => 5,
+    'orderby' => 'rand',
+
+    'tax_query' => array(
+        array(
+            'taxonomy' => 'equipment_category',
+            'field' => 'slug',
+            'terms' => $term->name,
+
+        )
+    ),
+    'post__not_in' => array ($single->ID),
+);
+
+//the query
+$relatedPosts = new WP_Query( $args );
+
+//loop through query
+if($relatedPosts->have_posts()){
+    echo '<ul>';
+    while($relatedPosts->have_posts()){ 
+        $relatedPosts->the_post();
+?>
+        <li><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></li>
+<?php
+    }
+    echo '</ul>';
+}else{
+    //no posts found
+}
+
+//restore original post data
+wp_reset_postdata();
+
+?>
+
+
+
+------------------------------------------------------------------------------>
+get_queried_object();
+
+
+
+
+------------------------------------------>
+
+<?php
+
+        $taxonomy = 'equipment_category';
+        $terms = get_terms($taxonomy);
+        if ( $terms && !is_wp_error( $terms ) ) :
+        ?>
+        <ul>
+            <?php foreach ( $terms as $term ) { ?>
+                <li><a href="<?php echo get_term_link($term->slug, $taxonomy); ?>"><?php echo $term->name; ?></a></li>
+            <?php } ?>
+        </ul>
+      <?php endif;?>
+      
+      
+      --------------------------------------------------------->
+
+
+$args = array(
+    'post_type' => 'post',
+    'tax_query' => array(
+        array(
+            'taxonomy' => 'people',
+            'field'    => 'slug',
+            'terms'    => 'bob',
+        ),
+    ),
+);
+$query = new WP_Query( $args );
+
+
+
+
+------------------------------------------------------>
+
+
+
+
+
+
+
+
+
+
+
+
+
